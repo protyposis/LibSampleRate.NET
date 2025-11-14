@@ -19,9 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LibSampleRate {
-    internal class InteropWrapper {
-
+namespace LibSampleRate
+{
+    internal class InteropWrapper
+    {
         public delegate IntPtr d_src_new(ConverterType converter_type, int channels, out int error);
         public delegate IntPtr d_src_delete(IntPtr state);
         public delegate int d_src_process(IntPtr state, ref SRC_DATA data);
@@ -40,8 +41,10 @@ namespace LibSampleRate {
         public static d_src_error src_error;
         public static d_src_strerror src_strerror;
 
-        static InteropWrapper() {
-            if (IntPtr.Size == 8) {
+        static InteropWrapper()
+        {
+            if (IntPtr.Size == 8)
+            {
                 src_new = Interop64.src_new;
                 src_delete = Interop64.src_delete;
                 src_process = Interop64.src_process;
@@ -51,7 +54,8 @@ namespace LibSampleRate {
                 src_error = Interop64.src_error;
                 src_strerror = Interop64.src_strerror;
             }
-            else {
+            else
+            {
                 src_new = Interop32.src_new;
                 src_delete = Interop32.src_delete;
                 src_process = Interop32.src_process;

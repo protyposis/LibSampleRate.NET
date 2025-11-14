@@ -19,13 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LibSampleRate {
-
+namespace LibSampleRate
+{
     /// <summary>
     /// A sample rate converter backed by libsamplerate.
     /// </summary>
-    public class SampleRateConverter : IDisposable {
-
+    public class SampleRateConverter : IDisposable
+    {
         private IntPtr srcState = IntPtr.Zero;
         private SRC_DATA srcData;
         private int error;
@@ -39,7 +39,8 @@ namespace LibSampleRate {
         /// </summary>
         /// <param name="type">the type of the internal conversion algorithm (quality level)</param>
         /// <param name="channels">the number of channels that will be provided to the processing method</param>
-        public SampleRateConverter(ConverterType type, int channels) {
+        public SampleRateConverter(ConverterType type, int channels)
+        {
             srcState = InteropWrapper.src_new(type, channels, out error);
             ThrowExceptionForError(error);
             srcData = new SRC_DATA();
@@ -53,18 +54,20 @@ namespace LibSampleRate {
         /// <summary>
         /// Gets the number of bytes buffered by the SRC. Buffering may happen since the SRC may read more
         /// data than it outputs during one #Process call.
-        /// 
+        ///
         /// This is a calculated estimation that may be off by a few samples due to the way it
         /// is calculated. See the private #Process method for details.
         /// </summary>
-        public int BufferedBytes {
+        public int BufferedBytes
+        {
             get { return (int)(bufferedSamples * 4); }
         }
 
         /// <summary>
         /// Resets the resampler, which essentially clears the internal buffer.
         /// </summary>
-        public void Reset() {
+        public void Reset()
+        {
             error = InteropWrapper.src_reset(srcState);
             ThrowExceptionForError(error);
             bufferedSamples = 0;
@@ -74,7 +77,8 @@ namespace LibSampleRate {
         /// Sets the resampling ratio through an instant change.
         /// </summary>
         /// <param name="ratio">the resampling ratio</param>
-        public void SetRatio(double ratio) {
+        public void SetRatio(double ratio)
+        {
             SetRatio(ratio, true);
         }
 
@@ -83,8 +87,10 @@ namespace LibSampleRate {
         /// </summary>
         /// <param name="ratio">the resampling ratio</param>
         /// <param name="step">true for an instant change in the ratio, false for a gradual linear change during the next #Process call</param>
-        public void SetRatio(double ratio, bool step) {
-            if (step) {
+        public void SetRatio(double ratio, bool step)
+        {
+            if (step)
+            {
                 // force the ratio for the next #Process call instead of linearly interpolating from the previous
                 // ratio to the current ratio
                 error = InteropWrapper.src_set_ratio(srcState, ratio);
@@ -98,7 +104,8 @@ namespace LibSampleRate {
         /// </summary>
         /// <param name="ratio">true if the ratio is valid, else false</param>
         /// <returns></returns>
-        public static bool CheckRatio(double ratio) {
+        public static bool CheckRatio(double ratio)
+        {
             return InteropWrapper.src_is_valid_ratio(ratio) == 1;
         }
 
@@ -117,13 +124,34 @@ namespace LibSampleRate {
         /// <param name="endOfInput">set to true to get the buffered samples from the resampler if no more input samples are supplied</param>
         /// <param name="inputLengthUsed">the number of bytes read from the input block</param>
         /// <param name="outputLengthGenerated">the number of bytes written to the output block</param>
-        public void Process(byte[] input, int inputOffset, int inputLength,
-            byte[] output, int outputOffset, int outputLength,
-            bool endOfInput, out int inputLengthUsed, out int outputLengthGenerated) {
-            unsafe {
-                fixed (byte* inputBytes = &input[inputOffset], outputBytes = &output[outputOffset]) {
-                    Process((float*)inputBytes, inputLength / 4, (float*)outputBytes, outputLength / 4, endOfInput,
-                        out inputLengthUsed, out outputLengthGenerated);
+        public void Process(
+            byte[] input,
+            int inputOffset,
+            int inputLength,
+            byte[] output,
+            int outputOffset,
+            int outputLength,
+            bool endOfInput,
+            out int inputLengthUsed,
+            out int outputLengthGenerated
+        )
+        {
+            unsafe
+            {
+                fixed (
+                    byte* inputBytes = &input[inputOffset],
+                        outputBytes = &output[outputOffset]
+                )
+                {
+                    Process(
+                        (float*)inputBytes,
+                        inputLength / 4,
+                        (float*)outputBytes,
+                        outputLength / 4,
+                        endOfInput,
+                        out inputLengthUsed,
+                        out outputLengthGenerated
+                    );
                     inputLengthUsed *= 4;
                     outputLengthGenerated *= 4;
                 }
@@ -145,19 +173,48 @@ namespace LibSampleRate {
         /// <param name="endOfInput">set to true to get the buffered samples from the resampler if no more input samples are supplied</param>
         /// <param name="inputLengthUsed">the number of samples read from the input block</param>
         /// <param name="outputLengthGenerated">the number of samples written to the output block</param>
-        public void Process(float[] input, int inputOffset, int inputLength,
-            float[] output, int outputOffset, int outputLength,
-            bool endOfInput, out int inputLengthUsed, out int outputLengthGenerated) {
-            unsafe {
-                fixed (float* inputFloats = &input[inputOffset], outputFloats = &output[outputOffset]) {
-                    Process(inputFloats, inputLength, outputFloats, outputLength, endOfInput, 
-                        out inputLengthUsed, out outputLengthGenerated);
+        public void Process(
+            float[] input,
+            int inputOffset,
+            int inputLength,
+            float[] output,
+            int outputOffset,
+            int outputLength,
+            bool endOfInput,
+            out int inputLengthUsed,
+            out int outputLengthGenerated
+        )
+        {
+            unsafe
+            {
+                fixed (
+                    float* inputFloats = &input[inputOffset],
+                        outputFloats = &output[outputOffset]
+                )
+                {
+                    Process(
+                        inputFloats,
+                        inputLength,
+                        outputFloats,
+                        outputLength,
+                        endOfInput,
+                        out inputLengthUsed,
+                        out outputLengthGenerated
+                    );
                 }
             }
         }
 
-        private unsafe void Process(float* input, int inputLength, float* output, int outputLength,
-            bool endOfInput, out int inputLengthUsed, out int outputLengthGenerated) {
+        private unsafe void Process(
+            float* input,
+            int inputLength,
+            float* output,
+            int outputLength,
+            bool endOfInput,
+            out int inputLengthUsed,
+            out int outputLengthGenerated
+        )
+        {
             srcData.data_in = input;
             srcData.data_out = output;
             srcData.end_of_input = endOfInput ? 1 : 0;
@@ -174,8 +231,10 @@ namespace LibSampleRate {
             bufferedSamples += inputLengthUsed - (outputLengthGenerated / ratio);
         }
 
-        private void ThrowExceptionForError(int error) {
-            if (error != 0) {
+        private void ThrowExceptionForError(int error)
+        {
+            if (error != 0)
+            {
                 throw new Exception(InteropWrapper.src_strerror(error));
             }
         }
@@ -183,16 +242,20 @@ namespace LibSampleRate {
         /// <summary>
         /// Disposes this instance of the resampler, freeing its memory.
         /// </summary>
-        public void Dispose() {
-            if (srcState != IntPtr.Zero) {
+        public void Dispose()
+        {
+            if (srcState != IntPtr.Zero)
+            {
                 srcState = InteropWrapper.src_delete(srcState);
-                if (srcState != IntPtr.Zero) {
+                if (srcState != IntPtr.Zero)
+                {
                     throw new Exception("could not delete the sample rate converter");
                 }
             }
         }
 
-        ~SampleRateConverter() {
+        ~SampleRateConverter()
+        {
             Dispose();
         }
     }

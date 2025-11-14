@@ -17,17 +17,18 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 
-namespace LibSampleRate {
+namespace LibSampleRate
+{
     /// <summary>
     /// Interop API methods for x86 DLL. Copied from samplerate.h.
     /// </summary>
     [SuppressUnmanagedCodeSecurity]
-    internal class Interop32 {
-
+    internal class Interop32
+    {
         private const string LIBSAMPLERATE = "libsamplerate-0.x86.dll";
         private const CallingConvention CC = CallingConvention.Cdecl;
 
@@ -37,7 +38,11 @@ namespace LibSampleRate {
         /// Error returned in *error.
         /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
-        public static extern IntPtr src_new(ConverterType converter_type, int channels, out int error);
+        public static extern IntPtr src_new(
+            ConverterType converter_type,
+            int channels,
+            out int error
+        );
 
         /// <summary>
         /// Cleanup all internal allocations.

@@ -17,17 +17,18 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
 
-namespace LibSampleRate {
+namespace LibSampleRate
+{
     /// <summary>
     /// SRC_DATA is used to pass data to src_simple() and src_process().
     /// Copied from http://www.mega-nerd.com/SRC/api_misc.html#SRC_DATA
     /// </summary>
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal unsafe struct SRC_DATA {
-
+    internal unsafe struct SRC_DATA
+    {
         /// <summary>
         /// A pointer to the input data samples.
         /// </summary>
@@ -49,16 +50,16 @@ namespace LibSampleRate {
         public int output_frames;
 
         /// <summary>
-        /// When the src_process function returns output_frames_gen will be set to the number of output frames 
-        /// generated and input_frames_used will be set to the number of input frames consumed to generate the 
-        /// provided number of output frames. 
+        /// When the src_process function returns output_frames_gen will be set to the number of output frames
+        /// generated and input_frames_used will be set to the number of input frames consumed to generate the
+        /// provided number of output frames.
         /// </summary>
         public int input_frames_used;
 
         /// <summary>
-        /// When the src_process function returns output_frames_gen will be set to the number of output frames 
-        /// generated and input_frames_used will be set to the number of input frames consumed to generate the 
-        /// provided number of output frames. 
+        /// When the src_process function returns output_frames_gen will be set to the number of output frames
+        /// generated and input_frames_used will be set to the number of input frames consumed to generate the
+        /// provided number of output frames.
         /// </summary>
         public int output_frames_gen;
 

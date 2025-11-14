@@ -20,9 +20,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace LibSampleRate.Demo {
-    class Program {
-        static void Main(string[] args) {
+namespace LibSampleRate.Demo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
             // Demo configuration
             double seconds = 10;
             double inputRate = 44100;
@@ -31,7 +34,8 @@ namespace LibSampleRate.Demo {
 
             // Create a raw sine wave signal as source
             float[] sourceData = new float[(int)(inputRate * seconds)];
-            for (int i = 0; i < sourceData.Length; i++) {
+            for (int i = 0; i < sourceData.Length; i++)
+            {
                 sourceData[i] = (float)Math.Sin((2 * Math.PI) / inputRate * i * frequency);
             }
 
@@ -49,40 +53,61 @@ namespace LibSampleRate.Demo {
             int inputBufferReadOffset = 0;
             float[] outputBuffer = new float[1000];
 
-            /* 
+            /*
              * Do the resampling block by block until all data has been read and no more data comes out
-             * 
+             *
              * The following block simulates a stream processing approach, where an inputBuffer is filled
              * from a source stream (here the sourceData array) block by block, and each block gets resampled
              * to an outputBuffer, until all the end of the stream has been reached and all buffered samples
              * have been output.
              */
-            do {
+            do
+            {
                 bool endOfInput = totalInputSampleCount == sourceData.Length;
 
-                if (inputBufferFillLevel == 0) {
+                if (inputBufferFillLevel == 0)
+                {
                     // Refill input buffer
-                    inputBufferFillLevel = Math.Min(1000, sourceData.Length - totalInputSampleCount);
+                    inputBufferFillLevel = Math.Min(
+                        1000,
+                        sourceData.Length - totalInputSampleCount
+                    );
                     inputBufferReadOffset = 0;
-                    Array.Copy(sourceData, totalInputSampleCount, inputBuffer, 0, inputBufferFillLevel);
+                    Array.Copy(
+                        sourceData,
+                        totalInputSampleCount,
+                        inputBuffer,
+                        0,
+                        inputBufferFillLevel
+                    );
                 }
 
-                src.Process(inputBuffer, inputBufferReadOffset, inputBufferFillLevel, 
-                    outputBuffer, 0, outputBuffer.Length, 
-                    endOfInput, out inputSampleCount, out outputSampleCount);
+                src.Process(
+                    inputBuffer,
+                    inputBufferReadOffset,
+                    inputBufferFillLevel,
+                    outputBuffer,
+                    0,
+                    outputBuffer.Length,
+                    endOfInput,
+                    out inputSampleCount,
+                    out outputSampleCount
+                );
 
                 inputBufferReadOffset += inputSampleCount;
                 inputBufferFillLevel -= inputSampleCount;
 
                 totalInputSampleCount += inputSampleCount;
                 totalOutputSampleCount += outputSampleCount;
-            }
-            while (inputSampleCount > 0 || outputSampleCount > 0);
+            } while (inputSampleCount > 0 || outputSampleCount > 0);
 
             // Print result
-            Console.WriteLine("{0} samples resampled to {1} samples (expected {2})", 
-                totalInputSampleCount, totalOutputSampleCount, 
-                sourceData.Length / inputRate * outputRate);
+            Console.WriteLine(
+                "{0} samples resampled to {1} samples (expected {2})",
+                totalInputSampleCount,
+                totalOutputSampleCount,
+                sourceData.Length / inputRate * outputRate
+            );
         }
     }
 }
