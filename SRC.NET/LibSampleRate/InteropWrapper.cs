@@ -16,8 +16,6 @@
 ** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 */
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LibSampleRate
 {
@@ -43,7 +41,7 @@ namespace LibSampleRate
 
         static InteropWrapper()
         {
-            if (IntPtr.Size == 8)
+            if (Environment.Is64BitProcess)
             {
                 src_new = Interop64.src_new;
                 src_delete = Interop64.src_delete;
