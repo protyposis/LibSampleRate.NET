@@ -21,11 +21,8 @@ using System.Security;
 
 namespace LibSampleRate
 {
-    /// <summary>
-    /// Interop API methods for x86 DLL. Copied from samplerate.h.
-    /// </summary>
     [SuppressUnmanagedCodeSecurity]
-    internal class Interop32
+    internal class InteropWin32
     {
         private const string LIBSAMPLERATE = "libsamplerate/samplerate.windows.x86.dll";
         private const CallingConvention CC = CallingConvention.Cdecl;

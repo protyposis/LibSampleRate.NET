@@ -16,6 +16,7 @@
 ** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 */
 using System;
+using System.Runtime.InteropServices;
 
 namespace LibSampleRate
 {
@@ -27,7 +28,7 @@ namespace LibSampleRate
         /// Error returned in *error.
         /// </summary>
         public delegate IntPtr d_src_new(ConverterType converter_type, int channels, out int error);
-        
+
         /// <summary>
         /// Cleanup all internal allocations.
         /// Always returns NULL.
@@ -82,27 +83,36 @@ namespace LibSampleRate
 
         static InteropWrapper()
         {
-            if (Environment.Is64BitProcess)
+            // NativeLibrary.SetDllImportResolver is not available in netstandard2.0, so we need a separate
+            // interop layer per platform/ABI and wire it conditionally here.
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                src_new = Interop64.src_new;
-                src_delete = Interop64.src_delete;
-                src_process = Interop64.src_process;
-                src_set_ratio = Interop64.src_set_ratio;
-                src_reset = Interop64.src_reset;
-                src_is_valid_ratio = Interop64.src_is_valid_ratio;
-                src_error = Interop64.src_error;
-                src_strerror = Interop64.src_strerror;
+                if (Environment.Is64BitProcess)
+                {
+                    src_new = InteropWin64.src_new;
+                    src_delete = InteropWin64.src_delete;
+                    src_process = InteropWin64.src_process;
+                    src_set_ratio = InteropWin64.src_set_ratio;
+                    src_reset = InteropWin64.src_reset;
+                    src_is_valid_ratio = InteropWin64.src_is_valid_ratio;
+                    src_error = InteropWin64.src_error;
+                    src_strerror = InteropWin64.src_strerror;
+                }
+                else
+                {
+                    src_new = InteropWin32.src_new;
+                    src_delete = InteropWin32.src_delete;
+                    src_process = InteropWin32.src_process;
+                    src_set_ratio = InteropWin32.src_set_ratio;
+                    src_reset = InteropWin32.src_reset;
+                    src_is_valid_ratio = InteropWin32.src_is_valid_ratio;
+                    src_error = InteropWin32.src_error;
+                    src_strerror = InteropWin32.src_strerror;
+                }
             }
             else
             {
-                src_new = Interop32.src_new;
-                src_delete = Interop32.src_delete;
-                src_process = Interop32.src_process;
-                src_set_ratio = Interop32.src_set_ratio;
-                src_reset = Interop32.src_reset;
-                src_is_valid_ratio = Interop32.src_is_valid_ratio;
-                src_error = Interop32.src_error;
-                src_strerror = Interop32.src_strerror;
+                throw new Exception("Unsupported platform");
             }
         }
     }
