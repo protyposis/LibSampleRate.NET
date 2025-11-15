@@ -23,8 +23,8 @@ namespace LibSampleRate
         private double bufferedSamples;
 
         /// <summary>
-        /// Creates a new resampler instance with the supplied converter type (which equals the resampling quality)
-        /// for a supplied number of channels.
+        /// Creates a new resampler instance for the specified converter type (which defines the resampling quality)
+        /// and channel count.
         /// </summary>
         /// <param name="type">the type of the internal conversion algorithm (quality level)</param>
         /// <param name="channels">the number of channels that will be provided to the processing method</param>
@@ -41,11 +41,12 @@ namespace LibSampleRate
         }
 
         /// <summary>
-        /// Gets the number of bytes buffered by the SRC. Buffering may happen since the SRC may read more
-        /// data than it outputs during one #Process call.
+        /// Gets the number of bytes currently buffered by the converter. Buffering can occur because the converter
+        /// may consume more samples than it produces during a single <see cref="Process"/>
+        /// call.
         ///
-        /// This is a calculated estimation that may be off by a few samples due to the way it
-        /// is calculated. See the private #Process method for details.
+        /// The value is an estimation and can be off by a few samples due to the calculation approach. See the
+        /// private <c>Process</c> overload for details.
         /// </summary>
         public int BufferedBytes
         {
@@ -72,10 +73,10 @@ namespace LibSampleRate
         }
 
         /// <summary>
-        /// Sets the resampling ratio. Multiplying the input rate with the ratio factor results in the output rate.
+        /// Sets the resampling ratio. Multiplying the input rate by the ratio factor yields the output rate.
         /// </summary>
         /// <param name="ratio">the resampling ratio</param>
-        /// <param name="step">true for an instant change in the ratio, false for a gradual linear change during the next #Process call</param>
+        /// <param name="step">True to change the ratio immediately; false to linearly interpolate to the new ratio during the next processing call.</param>
         public void SetRatio(double ratio, bool step)
         {
             if (step)
@@ -89,30 +90,29 @@ namespace LibSampleRate
         }
 
         /// <summary>
-        /// Checks if a given resampling ratio is valid.
+        /// Checks whether a given resampling ratio is valid.
         /// </summary>
-        /// <param name="ratio">true if the ratio is valid, else false</param>
-        /// <returns></returns>
+        /// <param name="ratio">The ratio to validate.</param>
+        /// <returns>True if the ratio is supported; otherwise false.</returns>
         public static bool CheckRatio(double ratio)
         {
             return InteropWrapper.src_is_valid_ratio(ratio) == 1;
         }
 
         /// <summary>
-        /// Processes a block of input samples by resampling it to a block of output samples. This method
-        /// expects 32-bit floating point samples stored in byte arrays. When the resampler is configured
-        /// for multiple channels, samples must be interleaved. The byte counts in the parameters are always
-        /// the total counts summed over all channels.
+        /// Processes a block of input samples by resampling it into a block of output samples. This overload
+        /// expects 32-bit floating-point samples stored in byte arrays. When the resampler is configured
+        /// for multiple channels, the samples must be interleaved. All byte counts refer to the totals across channels.
         /// </summary>
-        /// <param name="input">the input sample block</param>
-        /// <param name="inputOffset">the offset in the input block in bytes</param>
-        /// <param name="inputLength">the length of the input block data in bytes</param>
-        /// <param name="output">the output sample block</param>
-        /// <param name="outputOffset">the offset in the output block in bytes</param>
-        /// <param name="outputLength">the available length in the output block data in bytes</param>
-        /// <param name="endOfInput">set to true to get the buffered samples from the resampler if no more input samples are supplied</param>
-        /// <param name="inputLengthUsed">the number of bytes read from the input block</param>
-        /// <param name="outputLengthGenerated">the number of bytes written to the output block</param>
+        /// <param name="input">The input sample block.</param>
+        /// <param name="inputOffset">The offset in the input block, in bytes.</param>
+        /// <param name="inputLength">The length of the input block data, in bytes.</param>
+        /// <param name="output">The output sample block.</param>
+        /// <param name="outputOffset">The offset in the output block, in bytes.</param>
+        /// <param name="outputLength">The available length in the output block, in bytes.</param>
+        /// <param name="endOfInput">True to flush buffered samples because no more input samples are available.</param>
+        /// <param name="inputLengthUsed">On return, contains the number of bytes read from the input block.</param>
+        /// <param name="outputLengthGenerated">On return, contains the number of bytes written to the output block.</param>
         public void Process(
             byte[] input,
             int inputOffset,
@@ -148,20 +148,19 @@ namespace LibSampleRate
         }
 
         /// <summary>
-        /// Processes a block of input samples by resampling it to a block of output samples. This method
-        /// expects 32-bit floating point samples stored in float arrays. When the resampler is configured
-        /// for multiple channels, samples must be interleaved. The sample counts in the parameters are always
-        /// the total counts summed over all channels.
+        /// Processes a block of input samples by resampling it into a block of output samples. This overload
+        /// expects 32-bit floating-point samples stored in <see cref="float"/> arrays. When the resampler is configured
+        /// for multiple channels, the samples must be interleaved. All sample counts refer to the totals across channels.
         /// </summary>
-        /// <param name="input">the input sample block</param>
-        /// <param name="inputOffset">the offset in the input block in samples</param>
-        /// <param name="inputLength">the length of the input block data in samples</param>
-        /// <param name="output">the output sample block</param>
-        /// <param name="outputOffset">the offset in the output block in samples</param>
-        /// <param name="outputLength">the available length in the output block data in samples</param>
-        /// <param name="endOfInput">set to true to get the buffered samples from the resampler if no more input samples are supplied</param>
-        /// <param name="inputLengthUsed">the number of samples read from the input block</param>
-        /// <param name="outputLengthGenerated">the number of samples written to the output block</param>
+        /// <param name="input">The input sample block.</param>
+        /// <param name="inputOffset">The offset in the input block, in samples.</param>
+        /// <param name="inputLength">The length of the input block data, in samples.</param>
+        /// <param name="output">The output sample block.</param>
+        /// <param name="outputOffset">The offset in the output block, in samples.</param>
+        /// <param name="outputLength">The available length in the output block, in samples.</param>
+        /// <param name="endOfInput">True to flush buffered samples because no more input samples are available.</param>
+        /// <param name="inputLengthUsed">On return, contains the number of samples read from the input block.</param>
+        /// <param name="outputLengthGenerated">On return, contains the number of samples written to the output block.</param>
         public void Process(
             float[] input,
             int inputOffset,
