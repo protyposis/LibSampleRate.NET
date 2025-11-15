@@ -30,11 +30,6 @@ namespace LibSampleRate
         private const string LIBSAMPLERATE = "libsamplerate/samplerate.windows.x64.dll";
         private const CallingConvention CC = CallingConvention.Cdecl;
 
-        /// <summary>
-        /// Standard initialisation function : return an anonymous pointer to the
-        /// internal state of the converter. Choose a converter from the enums below.
-        /// Error returned in *error.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern IntPtr src_new(
             ConverterType converter_type,
@@ -42,53 +37,24 @@ namespace LibSampleRate
             out int error
         );
 
-        /// <summary>
-        /// Cleanup all internal allocations.
-        /// Always returns NULL.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern IntPtr src_delete(IntPtr state);
 
-        /// <summary>
-        /// Standard processing function.
-        /// Returns non zero on error.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern int src_process(IntPtr state, ref SRC_DATA data);
 
-        /// <summary>
-        /// Set a new SRC ratio. This allows step responses
-        /// in the conversion ratio.
-        /// Returns non zero on error.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern int src_set_ratio(IntPtr state, double new_ratio);
 
-        /// <summary>
-        /// Reset the internal SRC state.
-        /// Does not modify the quality settings.
-        /// Does not free any memory allocations.
-        /// Returns non zero on error.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern int src_reset(IntPtr state);
 
-        /// <summary>
-        /// Return TRUE if ratio is a valid conversion ratio, FALSE
-        /// otherwise.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern int src_is_valid_ratio(double ratio);
 
-        /// <summary>
-        /// Return an error number.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern int src_error(IntPtr state);
 
-        /// <summary>
-        /// Convert the error number into a string.
-        /// </summary>
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
         public static extern string src_strerror(int error);
     }
