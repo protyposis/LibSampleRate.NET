@@ -8,7 +8,7 @@ The library currently supports Windows x86 and x64. Other platforms can be easil
 
 ## Usage
 
-The entire public API surface lives in and is documented in [`SampleRateConverter.cs`](SRC.NET/LibSampleRate/SampleRateConverter.cs). A minimal example:
+The entire public API surface lives in and is documented in [`SampleRateConverter.cs`](src/LibSampleRate/SampleRateConverter.cs). A minimal example:
 
 ```csharp
 using LibSampleRate;
