@@ -10,6 +10,6 @@
     <RepositoryUrl>https://github.com/protyposis/LibSampleRate.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>audio;resampling;libsamplerate;</PackageTags>
-    <PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
   </PropertyGroup>
 </Project>
