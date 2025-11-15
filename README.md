@@ -1,12 +1,55 @@
-SRC.NET Managed Wrapper for LibSampleRate
-===================
+# LibSampleRate.NET
 
-This is a managed .NET wrapper written in C# for the popular [libsamplerate](http://www.mega-nerd.com/SRC/) (aka Secret Rabbit Code) resampling library. It has been extensively used in the past few years and should work flawlessly, but input is always welcome.
+A managed wrapper for the popular [libsamplerate](https://libsndfile.github.io/libsamplerate/) (aka Secret Rabbit Code) resampling library, written in C#.
 
-The Visual Studio solution in this repository contains two projects, the managed wrapper which compiles to a library, and a small demo application. The wrapper comes with both x86 and x64 precompiled libsamplerate DLLs and automatically binds to the correct library at runtime. Compiling instructions and a makefile for Visual Studio 2013 are provided as well.
+## Platform Support
 
+The library currently supports Windows x86 and x64. Other platforms can be easily added, but are currently not included because the [upstream repository](https://github.com/libsndfile/libsamplerate) only provides Windows builds.
 
-License & Credits
------------------
+## Usage
 
-Copyright (C) 2011-2025 Mario Guggenberger <mg@protyposis.net>. This project builds upon libsamplerate, Copyright (c) 2012-2016, Erik de Castro Lopo <erikd@mega-nerd.com>. Released under the BSD 2-Clause license.
+The entire public API surface lives in and is documented in [`SampleRateConverter.cs`](SRC.NET/LibSampleRate/SampleRateConverter.cs). A minimal example:
+
+```csharp
+using LibSampleRate;
+
+var channels = 1;
+var ratio = 2.0;
+var inputBuffer = new float[1000];
+var outputBuffer = new float[1000];
+
+var src = new SampleRateConverter(ConverterType.SRC_SINC_BEST_QUALITY, channels);
+src.SetRatio(ratio);
+
+src.Process(
+    inputBuffer,
+    0,
+    inputBuffer.Length,
+    outputBuffer,
+    0,
+    outputBuffer.Length,
+    endOfInput: true,
+    out var inputSampleCount,
+    out var outputSampleCount
+);
+
+Console.WriteLine($"{inputSampleCount} input samples resampled to {outputSampleCount} output samples.");
+```
+
+See the `LibSampleRate.Demo` project for a more complete streaming scenario that shows how to push blocks of audio through the converter.
+
+## Development
+
+The solution contains two projects: the managed wrapper library, and a small console app demonstrating streaming resampling and serving as an integration test.
+
+Run the helper script before building with Visual Studio or `dotnet build` so the native DLLs and their notices are available:
+
+```powershell
+pwsh scripts/fetch-libsamplerate.ps1
+```
+
+## License & Credits
+
+Copyright (C) 2011-2025 Mario Guggenberger <mg@protyposis.net>. Released under the BSD 2-Clause license.
+
+This project builds upon libsamplerate, Copyright (c) 2012-2016, Erik de Castro Lopo <erikd@mega-nerd.com>. Released under the BSD 2-Clause license.
