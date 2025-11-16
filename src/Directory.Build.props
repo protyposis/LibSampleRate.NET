@@ -5,7 +5,7 @@
     <Product>LibSampleRate.NET</Product>
     <Description>Managed wrapper for the native SRC/libsamplerate resampling library</Description>
     <Copyright>Copyright © 2015-$([System.DateTime]::Now.ToString(yyyy)) Mario Guggenberger</Copyright>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <IsPackable>false</IsPackable>
     <RepositoryUrl>https://github.com/protyposis/LibSampleRate.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
