@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  LIBSAMPLERATE_VERSION: 0.2.2
-
 jobs:
   build:
     runs-on: windows-latest
@@ -19,6 +16,12 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
+
+      - name: Resolve libsamplerate version
+        shell: pwsh
+        run: |
+          $version = (Get-Content libsamplerate.version | Select-Object -First 1).Trim()
+          "LIBSAMPLERATE_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Cache libsamplerate binaries
         id: cache-libsamplerate

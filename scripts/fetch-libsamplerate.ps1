@@ -1,11 +1,17 @@
 param(
-    [string]$Version = "0.2.2"
+    [string]$Version
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path -Path (Join-Path $PSScriptRoot '..')
+
+if (-not $Version) {
+    $versionFile = Join-Path $repoRoot 'libsamplerate.version'
+    $Version = (Get-Content $versionFile | Select-Object -First 1).Trim()
+}
+
 $targetRoot = Join-Path $repoRoot 'libsamplerate'
 $downloadBase = "https://github.com/libsndfile/libsamplerate/releases/download/$Version"
 
@@ -44,7 +50,6 @@ foreach ($package in $packages) {
     Move-Item -Path $extractedPath -Destination $destination
 }
 
-# Download important packaging metadata files which are not part of the release packages
 Write-Host "Downloading upstream metadata..."
 $metaFiles = @("AUTHORS", "COPYING")
 foreach ($meta in $metaFiles) {
