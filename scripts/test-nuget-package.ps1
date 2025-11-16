@@ -48,6 +48,11 @@ $programPath = Join-Path $testProjectDir "Program.cs"
 $demoProgram = Join-Path $repoRoot "src/LibSampleRate.Demo/Program.cs"
 Copy-Item -Path $demoProgram -Destination $programPath -Force
 
+# Prevent pollution of global NuGet cache
+Write-Host "`nUsing local NuGet cache..."
+$testPackages = Join-Path $outputDir ".nuget-packages"
+$env:NUGET_PACKAGES = $testPackages
+
 # Restore and add package using local source
 dotnet add "$testProjectPath" package LibSampleRate --version $PackageVersion --source "$outputDir" --no-restore
 dotnet restore "$testProjectPath" --source "$outputDir" --disable-parallel --force
