@@ -4,23 +4,34 @@
     <RootNamespace>LibSampleRate</RootNamespace>
     <AssemblyName>LibSampleRate</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <!-- The native libs cannot be in a `libsamplerate` subdirectory and must be placed at the root 
+    because Nuget flattens the package contents on install and the subdirectory gets lost. This is
+    important for the `DllImport` which needs to always be able to find the native library at
+    the expected place, no matter if a local build or a NuGet package install. -->
     <Content Include="..\..\libsamplerate\win64\bin\samplerate.dll">
-      <Link>libsamplerate/samplerate.windows.x64.dll</Link>
+      <Link>libsamplerate.windows.x64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>runtimes/win-x64/native/libsamplerate.windows.x64.dll</PackagePath>
     </Content>
     <Content Include="..\..\libsamplerate\win32\bin\samplerate.dll">
-      <Link>libsamplerate/samplerate.windows.x86.dll</Link>
+      <Link>libsamplerate.windows.x86.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>runtimes/win-x86/native/libsamplerate.windows.x86.dll</PackagePath>
     </Content>
     <Content Include="..\..\libsamplerate\AUTHORS">
-      <Link>libsamplerate/AUTHORS</Link>
+      <Link>libsamplerate.AUTHORS</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>contentFiles/any/any/libsamplerate</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
     <Content Include="..\..\libsamplerate\COPYING">
-      <Link>libsamplerate/COPYING</Link>
+      <Link>libsamplerate.COPYING</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>contentFiles/any/any/libsamplerate</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
   </ItemGroup>
 </Project>

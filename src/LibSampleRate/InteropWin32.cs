@@ -15,7 +15,7 @@ namespace LibSampleRate
     [SuppressUnmanagedCodeSecurity]
     internal class InteropWin32
     {
-        private const string LIBSAMPLERATE = "libsamplerate/samplerate.windows.x86.dll";
+        private const string LIBSAMPLERATE = "libsamplerate.windows.x86.dll";
         private const CallingConvention CC = CallingConvention.Cdecl;
 
         [DllImport(LIBSAMPLERATE, CallingConvention = CC)]
