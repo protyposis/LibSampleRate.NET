@@ -8,6 +8,8 @@ The library currently supports Windows x86 and x64. Other platforms can be easil
 
 ## Usage
 
+The easiest way to use this library is by installing the package through [NuGet](https://www.nuget.org/packages/LibSampleRate).
+
 The entire public API surface lives in and is documented in [`SampleRateConverter.cs`](https://github.com/protyposis/LibSampleRate.NET/blob/main/src/LibSampleRate/SampleRateConverter.cs). A minimal example:
 
 ```csharp
