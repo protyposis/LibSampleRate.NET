@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  LIBSAMPLERATE_VERSION: 0.2.2
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+
+      - name: Cache libsamplerate binaries
+        id: cache-libsamplerate
+        uses: actions/cache@v4
+        with:
+          path: libsamplerate
+          key: ${{ runner.os }}-libsamplerate-${{ env.LIBSAMPLERATE_VERSION }}
+
+      - name: Fetch libsamplerate binaries
+        if: steps.cache-libsamplerate.outputs.cache-hit != 'true'
+        run: pwsh -File scripts/fetch-libsamplerate.ps1 -Version $env:LIBSAMPLERATE_VERSION
+
+      - name: Restore
+        run: dotnet restore src/LibSampleRate.sln
+
+      - name: Build
+        run: dotnet build src/LibSampleRate.sln --configuration Release --no-restore
+
+      - name: Integration test
+        run: dotnet run --project src/LibSampleRate.Demo/LibSampleRate.Demo.csproj --configuration Release --runtime win-x64
