@@ -5,6 +5,7 @@
     <AssemblyName>LibSampleRate</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>true</IsPackable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- The native libs cannot be in a `libsamplerate` subdirectory and must be placed at the root 
@@ -33,5 +34,6 @@
       <PackagePath>contentFiles/any/any/libsamplerate</PackagePath>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
+    <None Include="../../README.md" Pack="true" PackagePath="README.md" />
   </ItemGroup>
 </Project>
